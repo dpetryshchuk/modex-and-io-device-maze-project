@@ -1,0 +1,38 @@
+Bug 1:
+    Status bar was displaying a copy of the game screen and player could go behind the status bar
+    Fixed by changing starting address of the game screen by 1440, the number of VGA addresses. 
+        Player behind status bar fixed by changing height of game screen by 18, height of status bar.
+
+Bug 2: 
+    Was getting warning in my str to graphics function:
+        text.c:592: warning: pointer targets in assignment differ in signedness
+            591: font_idx = string[i];
+            592: char_data = font_data[(int)font_idx];
+    Got these warnings throughout
+    Fixed by changing font_idx from an int to an unsigned
+        Apparently char is signed in our compiler
+    Also fixed by making all my char arrays like in str_to_graphics unsigned char arrays
+
+Bug 3:
+    PLayer masking not redrawing the ground after player moves, leaving black trail even
+        after implementing player masking. 
+    Ended up being a rogue redraw in the code that was drawing the player player block again after reputting the 
+        background block on the map. 
+    Fixed by deleting the draw_full_block function call.
+
+Bug 4: The Status bar was displaying the text jumbled and destroyed
+    Fixed by realizing I was writing the planes from 0 to 3 in my string to graphic function but 3 to 0 in my 
+        copy_status and show_status functions. So the text was copied over to the build buffer incorrectly.
+    
+2.2 Bugs
+Bug 5: Game crashes after using tux or keyboard to quit the game. 
+    Fixed by realizing I wasn't closing my tux thread at the end of the game so the quit flag would go high and
+        the tux thread would never join. Added a quit flag break in my tux thread and it was fixed
+
+Bug 6: Text floating up was messing with the character's block. Corrupting the block
+    Fixed by reordering the character drawing functions and the text drawing function so the tex wouldn't overwrite
+        the block where the character was
+
+Bug 7: Text was garbled and corrupted. 
+    Fixed by realizing that I didn't need to handle planes in my new text to graphics function because I was writing to the build
+        buffer using math that already handled it.
